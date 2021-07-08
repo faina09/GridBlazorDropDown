@@ -51,6 +51,16 @@ namespace GridBlazorDropDown.Data
             return records;
         }
 
+        // used by RemoteDropDownComponent
+        public IEnumerable<SelectItem> GetSelectedItems(string searchTerm)
+        {
+            using var context = new ApplicationDbContext(ApplicationDbContext.GetOptions());
+            return context.Customers
+                .Where(o => o.Name.StartsWith(searchTerm)).Take(100)
+                .Select(r => new SelectItem(r.CustomerId.ToString(), r.Name))
+                .ToList();
+        }
+
         // CRUD
         public async Task<Customer> Get(params object[] keys)
         {
